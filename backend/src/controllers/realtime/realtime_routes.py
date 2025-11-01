@@ -31,14 +31,13 @@ def add_student_endpoint():
     if not body:
         return jsonify({"error": "Request body required"}), 400
     
-    required_fields = ["id", "name", "gpa"]
+    required_fields = ["name", "gpa"]
     for field in required_fields:
         if field not in body:
             return jsonify({"error": f"Missing required field: {field}"}), 400
     
     try:
         student_id = add_student(
-            student_id=body["id"],
             name=body["name"],
             gpa=float(body["gpa"]),
             corruption=bool(body.get("corruption", False)),

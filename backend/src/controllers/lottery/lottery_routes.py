@@ -4,7 +4,9 @@ from src.controllers.lottery import (
     get_assignments,
     add_student,
     delete_student,
-    fetch_all_students
+    fetch_all_students,
+    clear_all_students,
+    populate_dummy_students
 )
 
 lottery_bp = Blueprint("preData", __name__)
@@ -25,20 +27,21 @@ def add_student_endpoint():
     if not body:
         return jsonify({"error": "Request body required"}), 400
     
-    required_fields = ["id", "name", "gpa"]
+    required_fields = ["name", "gpa"]
     for field in required_fields:
         if field not in body:
             return jsonify({"error": f"Missing required field: {field}"}), 400
     
     try:
         student_id = add_student(
-            student_id=body["id"],
             name=body["name"],
             gpa=float(body["gpa"]),
             corruption=bool(body.get("corruption", False)),
             disabled=bool(body.get("disabled", False))
         )
         return jsonify({"id": student_id, "message": "PreData student added"}), 201
+    except ValueError as e:
+        return jsonify({"error": str(e)}), 400
     except Exception as e:
         return jsonify({"error": str(e)}), 400
 
@@ -69,5 +72,30 @@ def get_assignments_endpoint():
     try:
         assignments = get_assignments()
         return jsonify(assignments), 200
+    except Exception as e:
+        return jsonify({"error": str(e)}), 400
+
+
+@lottery_bp.route("/clear", methods=["POST"])
+def clear_system_endpoint():
+    try:
+        clear_all_students()
+        return jsonify({
+            "message": "PreData lottery system cleared successfully",
+            "count": 0
+        }), 200
+    except Exception as e:
+        return jsonify({"error": str(e)}), 400
+
+
+@lottery_bp.route("/dummyData", methods=["POST"])
+def populate_dummy_data_endpoint():
+    try:
+        created = populate_dummy_students()
+        return jsonify({
+            "message": "Dummy students populated successfully",
+            "count": len(created),
+            "students": created
+        }), 201
     except Exception as e:
         return jsonify({"error": str(e)}), 400

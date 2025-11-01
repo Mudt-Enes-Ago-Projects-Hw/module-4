@@ -1,6 +1,6 @@
 """
-Script to create 100 sample students and upload to local SQLite DB.
-Run as: python scripts/populate_students.py
+Script to create 100 sample students for PreData system (demo purposes).
+Run as: python backend/scripts/populate_students.py
 """
 import os
 import sys

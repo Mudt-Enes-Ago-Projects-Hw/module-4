@@ -24,6 +24,9 @@ def create_app():
     from src.db import db
     db.init_app(app)
     
+    # Import models so they're registered with SQLAlchemy
+    from src.models import Student, Assignment, RealtimeStudent, RealtimeAssignment
+    
     # Create tables
     with app.app_context():
         db.create_all()

@@ -1,12 +1,8 @@
-"""
-RealTime lottery assignments getter - for live 10-student lottery system
-"""
 from src.models.realtime_assignment import RealtimeAssignment
 from src.models.realtime_student import RealtimeStudent
 
 
-def get_realtime_assignments():
-    """Get all realtime lottery assignments with student details"""
+def get_assignments():
     assignments = RealtimeAssignment.query.join(RealtimeStudent).order_by(
         RealtimeAssignment.room_number,
         RealtimeAssignment.student_id

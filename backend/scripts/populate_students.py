@@ -12,7 +12,7 @@ if ROOT not in sys.path:
     sys.path.insert(0, ROOT)
 
 from src.app import app
-from src.db import db
+from src.config.database import db
 from src.models import Student
 
 FIRST_NAMES = [

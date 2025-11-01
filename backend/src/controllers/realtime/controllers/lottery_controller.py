@@ -1,14 +1,10 @@
-"""
-RealTime lottery runner - for live 10-student lottery system
-Simplified allocation: 1 premium, 3 single, 3 double rooms (10 students total)
-"""
 import random
-from src.db import db
+from src.config.database import db
 from src.models.realtime_student import RealtimeStudent
 from src.models.realtime_assignment import RealtimeAssignment
 
 
-def run_realtime_lottery():
+def run_lottery():
     """
     Run the lottery for exactly 10 students:
     - 1 premium room (corrupt or random)
@@ -20,16 +16,14 @@ def run_realtime_lottery():
     if len(students) != 10:
         raise ValueError(f"Realtime lottery requires exactly 10 students, but found {len(students)}")
     
-    # Clear previous assignments
     RealtimeAssignment.query.delete()
     
-    # Create a mutable list of students
     available_students = students.copy()
     random.shuffle(available_students)
     
     assignments = []
     
-    # 1. Premium Room (Room 1) - 1 student
+    # 1. Premium Room
     corrupt_students = [s for s in available_students if s.corruption]
     if corrupt_students:
         premium_student = corrupt_students[0]
@@ -44,7 +38,7 @@ def run_realtime_lottery():
     ))
     available_students.remove(premium_student)
     
-    # 2. Single Rooms (Rooms 2-4) - 3 students
+    # 2. Single Rooms
     single_room_students = []
     
     # Get top GPA student
@@ -52,7 +46,7 @@ def run_realtime_lottery():
     if available_students:
         single_room_students.append(available_students.pop(0))
     
-    # Get disabled students (up to 1 more)
+    # Get disabled student/s
     disabled_students = [s for s in available_students if s.disabled]
     if disabled_students and len(single_room_students) < 3:
         single_room_students.append(disabled_students[0])
@@ -72,28 +66,28 @@ def run_realtime_lottery():
             roommate_id=None
         ))
     
-    # 3. Double Rooms (Rooms 5-7) - 6 students (3 rooms)
+    # 3. Double Rooms
     random.shuffle(available_students)
     for i in range(0, len(available_students), 2):
         if i + 1 < len(available_students):
-            student1 = available_students[i]
-            student2 = available_students[i + 1]
+
+            s1 = available_students[i]
+            s2 = available_students[i + 1]
             room_number = 5 + (i // 2)
             
             assignments.append(RealtimeAssignment(
-                student_id=student1.id,
+                student_id=s1.id,
                 room_number=room_number,
                 room_type='double',
-                roommate_id=student2.id
+                roommate_id=s2.id
             ))
             assignments.append(RealtimeAssignment(
-                student_id=student2.id,
+                student_id=s2.id,
                 room_number=room_number,
                 room_type='double',
-                roommate_id=student1.id
+                roommate_id=s1.id
             ))
     
-    # Save all assignments
     for assignment in assignments:
         db.session.add(assignment)
     db.session.commit()

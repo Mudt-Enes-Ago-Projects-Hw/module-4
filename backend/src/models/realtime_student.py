@@ -1,7 +1,7 @@
 """
 RealTime Student model - for live 10-student lottery system
 """
-from src.db import db
+from src.config.database import db
 
 
 class RealtimeStudent(db.Model):

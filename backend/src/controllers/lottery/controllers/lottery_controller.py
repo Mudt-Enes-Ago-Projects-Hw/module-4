@@ -1,16 +1,13 @@
-"""
-Run lottery controller
-"""
 import random
-from src.db import db
+from src.config.database import db
 from src.models import Student, Assignment
 
 
 def run_lottery():
     """
     Run the lottery with new distribution:
-    - 10 premium rooms (corrupt students)
-    - 30 single rooms (top GPA + disabled + random)
+    - 10 premium rooms (for our relatives/friends that are students)
+    - 30 single rooms (top 10 GPA + 10 disabled + 10 random)
     - 60 double rooms (remaining students, 2 per room)
     """
     students = [s.to_dict() for s in Student.query.all()]
@@ -49,12 +46,12 @@ def run_lottery():
     # 2) Single rooms (30 total: top GPA + disabled + random)
     remaining = [s for s in students if s["id"] not in selected_ids]
     
-    # 2a) Top 10 GPA
+    # Top 10 GPA
     top_gpa = sorted(remaining, key=lambda x: x.get("gpa", 0), reverse=True)[:10]
     single_students = top_gpa.copy()
     selected_ids.extend([s["id"] for s in top_gpa])
     
-    # 2b) Disabled students (up to 10)
+    # Disabled students (up to 10)
     remaining = [s for s in students if s["id"] not in selected_ids]
     disabled = [s for s in remaining if s.get("disabled")]
     if len(disabled) > 10:
@@ -64,7 +61,7 @@ def run_lottery():
     single_students.extend(disabled_pick)
     selected_ids.extend([s["id"] for s in disabled_pick])
     
-    # 2c) Random to fill up to 30 singles
+    # Random to fill up to 30 singles
     remaining = [s for s in students if s["id"] not in selected_ids]
     need = 30 - len(single_students)
     if need > 0:
@@ -88,7 +85,7 @@ def run_lottery():
     if len(remaining) != 60:
         raise RuntimeError(f"Expected 60 students for double rooms, got {len(remaining)}")
     
-    room_num = 41  # Start double rooms at 41
+    room_num = 41  # Start double rooms at 41 (cuz 40 rooms are single rooms)
     i = 0
     while i < len(remaining):
         s1 = remaining[i]

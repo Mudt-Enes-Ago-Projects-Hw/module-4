@@ -1,11 +1,7 @@
-"""
-Get assignments controller
-"""
 from src.models import Assignment, Student
 
 
 def get_assignments():
-    """Get all lottery assignments with student details"""
     assignments = Assignment.query.join(Student).order_by(Assignment.room_number, Assignment.student_id).all()
     
     result = []

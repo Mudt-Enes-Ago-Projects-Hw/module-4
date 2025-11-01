@@ -1,7 +1,7 @@
 """
 Assignment model
 """
-from src.db import db
+from src.config.database import db
 
 
 class Assignment(db.Model):

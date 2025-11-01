@@ -1,12 +1,8 @@
-"""
-RealTime student controller - for live 10-student lottery system
-"""
-from src.db import db
+from src.config.database import db
 from src.models.realtime_student import RealtimeStudent
 
 
-def add_realtime_student(student_id, name, gpa, corruption=False, disabled=False):
-    """Add a new realtime student (max 10 students allowed)"""
+def add_student(student_id, name, gpa, corruption=False, disabled=False):
     # Check if we already have 10 students
     student_count = RealtimeStudent.query.count()
     if student_count >= 10:
@@ -29,8 +25,7 @@ def add_realtime_student(student_id, name, gpa, corruption=False, disabled=False
     return student.id
 
 
-def delete_realtime_student(student_id):
-    """Delete a realtime student by ID"""
+def delete_student(student_id):
     student = RealtimeStudent.query.get(student_id)
     if student:
         db.session.delete(student)
@@ -39,19 +34,16 @@ def delete_realtime_student(student_id):
     return False
 
 
-def fetch_all_realtime_students():
-    """Get all realtime students"""
+def fetch_all_students():
     students = RealtimeStudent.query.all()
     return [student.to_dict() for student in students]
 
 
-def get_realtime_student_count():
-    """Get the current count of realtime students"""
+def get_student_count():
     return RealtimeStudent.query.count()
 
 
-def clear_all_realtime_students():
-    """Clear all realtime students (for resetting the system)"""
+def clear_all_students():
     RealtimeStudent.query.delete()
     db.session.commit()
     return True

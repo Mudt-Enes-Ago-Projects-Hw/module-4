@@ -8,6 +8,8 @@ interface Student {
   id: number;
   name: string;
   gpa: number;
+  disabled: boolean;
+  corruption: boolean;
 }
 
 export default function RealtimePage() {
@@ -173,25 +175,49 @@ export default function RealtimePage() {
               placeholder="GPA (0-5.0)"
               className="w-full px-4 py-3 rounded-lg bg-white/20 text-white placeholder-gray-300 border border-white/30 focus:outline-none focus:ring-2 focus:ring-cyan-400"
             />
-            <div className="flex items-center space-x-6">
-              <label className="flex items-center space-x-2 cursor-pointer">
-                <input
-                  type="checkbox"
-                  checked={disabled}
-                  onChange={(e) => setDisabled(e.target.checked)}
-                  className="w-5 h-5 rounded bg-white/20 border border-white/30 checked:bg-cyan-500 focus:ring-2 focus:ring-cyan-400"
-                />
-                <span className="text-white">Disabled</span>
-              </label>
-              <label className="flex items-center space-x-2 cursor-pointer">
-                <input
-                  type="checkbox"
-                  checked={corruption}
-                  onChange={(e) => setCorruption(e.target.checked)}
-                  className="w-5 h-5 rounded bg-white/20 border border-white/30 checked:bg-blue-500 focus:ring-2 focus:ring-blue-400"
-                />
-                <span className="text-white">Corruption</span>
-              </label>
+            <div className="space-y-2">
+              <p className="text-white font-semibold">Student Status:</p>
+              <div className="flex items-center space-x-6">
+                <label className="flex items-center space-x-2 cursor-pointer">
+                  <input
+                    type="radio"
+                    name="studentStatus"
+                    checked={!disabled && !corruption}
+                    onChange={() => {
+                      setDisabled(false);
+                      setCorruption(false);
+                    }}
+                    className="w-5 h-5 text-green-500 focus:ring-2 focus:ring-green-400"
+                  />
+                  <span className="text-white">Regular</span>
+                </label>
+                <label className="flex items-center space-x-2 cursor-pointer">
+                  <input
+                    type="radio"
+                    name="studentStatus"
+                    checked={disabled}
+                    onChange={() => {
+                      setDisabled(true);
+                      setCorruption(false);
+                    }}
+                    className="w-5 h-5 text-cyan-500 focus:ring-2 focus:ring-cyan-400"
+                  />
+                  <span className="text-white">Disabled</span>
+                </label>
+                <label className="flex items-center space-x-2 cursor-pointer">
+                  <input
+                    type="radio"
+                    name="studentStatus"
+                    checked={corruption}
+                    onChange={() => {
+                      setDisabled(false);
+                      setCorruption(true);
+                    }}
+                    className="w-5 h-5 text-blue-500 focus:ring-2 focus:ring-blue-400"
+                  />
+                  <span className="text-white">Corruption</span>
+                </label>
+              </div>
             </div>
             <button
               type="submit"
@@ -220,14 +246,36 @@ export default function RealtimePage() {
           ) : (
             <div className="max-h-[400px] overflow-y-auto custom-scrollbar">
               <div className="space-y-2">
-                {students && students.map((student) => (
+                {students && [...students].sort((a, b) => {
+                  // Sort: corrupt first, then disabled, then regular
+                  if (a.corruption && !b.corruption) return -1;
+                  if (!a.corruption && b.corruption) return 1;
+                  if (a.disabled && !b.disabled) return -1;
+                  if (!a.disabled && b.disabled) return 1;
+                  return 0;
+                }).map((student) => (
                   <div
                     key={student.id}
                     className="flex items-center justify-between bg-white/20 rounded-lg p-4 hover:bg-white/30 transition-all"
                   >
                     <div className="flex-1">
-                      <p className="text-white font-semibold text-lg">{student.name}</p>
-                      <p className="text-white/70 text-sm">GPA: {student.gpa.toFixed(2)}</p>
+                      <div className="flex items-center gap-2 mb-1">
+                        <p className="text-white font-semibold text-lg">{student.name}</p>
+                        {student.corruption && (
+                          <span className="bg-orange-500 text-white text-xs px-2 py-1 rounded-full font-bold">
+                            CORRUPT
+                          </span>
+                        )}
+                        {student.disabled && (
+                          <span className="bg-blue-500 text-white text-xs px-2 py-1 rounded-full font-bold">
+                            DISABLED
+                          </span>
+                        )}
+                      </div>
+                      <p className="text-white/70 text-sm">
+                        GPA: {student.gpa.toFixed(2)} | 
+                        Status: {student.corruption ? ' Corrupt' : student.disabled ? ' Disabled' : ' Regular'}
+                      </p>
                     </div>
                     <button
                       onClick={() => handleDeleteStudent(student.id)}

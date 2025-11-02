@@ -27,17 +27,14 @@ export default function LotteryResults() {
   }, []);
 
   const startHypeSequence = async () => {
-    // Phase 1: Initial anticipation
     setHypePhase(1);
-    await new Promise(resolve => setTimeout(resolve, 1500));
+    await new Promise(resolve => setTimeout(resolve, 750));
 
-    // Phase 2: Building excitement
     setHypePhase(2);
-    await new Promise(resolve => setTimeout(resolve, 1500));
+    await new Promise(resolve => setTimeout(resolve, 750));
 
-    // Phase 3: Maximum hype
     setHypePhase(3);
-    await new Promise(resolve => setTimeout(resolve, 1500));
+    await new Promise(resolve => setTimeout(resolve, 750));
 
     // Fetch the results
     try {
@@ -57,18 +54,6 @@ export default function LotteryResults() {
     }
   };
 
-  const getHypeMessage = () => {
-    switch (hypePhase) {
-      case 1:
-        return '🎰 Drawing lots...';
-      case 2:
-        return '✨ Shuffling destiny...';
-      case 3:
-        return '🎊 And the winners are...';
-      default:
-        return '';
-    }
-  };
 
   const categorizeAllStudents = () => {
     // Sort by room number
@@ -90,7 +75,7 @@ export default function LotteryResults() {
 
           {/* Hype message */}
           <h1 className="text-3xl font-bold text-white mb-4 transition-all duration-300">
-            {getHypeMessage()}
+            Running The Lotto...
           </h1>
 
           {/* Progress bar */}

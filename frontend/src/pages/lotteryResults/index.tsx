@@ -92,6 +92,9 @@ export default function LotteryResults() {
 
   const sortedAssignments = categorizeAllStudents();
   const totalRooms = new Set(assignments.map(a => a.room_number)).size;
+  
+  // Find the highest GPA among all students
+  const highestGPA = assignments.length > 0 ? Math.max(...assignments.map(a => a.gpa)) : 0;
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-emerald-900 via-teal-900 to-cyan-900 p-8">
@@ -101,7 +104,7 @@ export default function LotteryResults() {
         {/* Header */}
         <div className="text-center mb-8 animate-fade-in">
           <h1 className="text-6xl font-bold text-white mb-4 drop-shadow-lg">
-            🏆 Lottery Results 🏆
+            Lottery Results
           </h1>
           <p className="text-2xl text-white/80">
             Congratulations to all the winners!
@@ -111,17 +114,14 @@ export default function LotteryResults() {
         {/* Stats */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
           <div className="bg-white/10 backdrop-blur-md rounded-lg p-6 text-center">
-            <div className="text-4xl mb-2">👥</div>
             <div className="text-3xl font-bold text-white">{assignments.length}</div>
             <div className="text-white/70">Total Students</div>
           </div>
           <div className="bg-white/10 backdrop-blur-md rounded-lg p-6 text-center">
-            <div className="text-4xl mb-2">🚪</div>
             <div className="text-3xl font-bold text-white">{totalRooms}</div>
             <div className="text-white/70">Rooms Assigned</div>
           </div>
           <div className="bg-white/10 backdrop-blur-md rounded-lg p-6 text-center">
-            <div className="text-4xl mb-2">📊</div>
             <div className="text-3xl font-bold text-white">
               {assignments.length > 0 ? (assignments.reduce((sum, a) => sum + a.gpa, 0) / assignments.length).toFixed(2) : '0.00'}
             </div>
@@ -132,7 +132,7 @@ export default function LotteryResults() {
         {/* All Assignments - Sorted by Room Number */}
         <div className="bg-white/10 backdrop-blur-md rounded-lg p-6">
           <h2 className="text-3xl font-bold text-white mb-4">
-            📋 All Assignments (Sorted by Room Number)
+            All Assignments (Sorted by Room Number)
           </h2>
           <div className="space-y-2">
             {sortedAssignments && sortedAssignments.map((assignment, idx) => (
@@ -150,7 +150,7 @@ export default function LotteryResults() {
                         <span className="bg-orange-500 text-white text-sm px-3 py-1 rounded-full font-bold">
                           🔶 CORRUPT PREMIUM ROOM
                         </span>
-                      ) : assignment.room_type === 'single' && !assignment.corruption && assignment.gpa >= 3.5 ? (
+                      ) : assignment.room_type === 'single' && !assignment.corruption && assignment.gpa === highestGPA ? (
                         <span className="bg-yellow-500 text-white text-sm px-3 py-1 rounded-full font-bold">
                           ⭐ SCHOLARSHIP ROOM
                         </span>

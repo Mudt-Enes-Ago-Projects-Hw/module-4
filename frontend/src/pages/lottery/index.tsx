@@ -130,7 +130,7 @@ export default function LotteryPage() {
       
       <div className="max-w-4xl mx-auto">
         <h1 className="text-5xl font-bold text-white text-center mb-8 drop-shadow-lg">
-          🎲 Dormitory Lottery System
+          Dormitory Lottery System
         </h1>
 
         {/* Action Buttons */}
@@ -237,7 +237,7 @@ export default function LotteryPage() {
         {/* Students List */}
         <div className="bg-white/10 backdrop-blur-md rounded-lg p-6 mb-6">
           <h2 className="text-2xl font-bold text-white mb-4">
-            👥 Students ({students.length})
+            Students ({students.length})
           </h2>
           
           {loading ? (

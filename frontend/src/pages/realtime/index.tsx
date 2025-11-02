@@ -116,7 +116,7 @@ export default function RealtimePage() {
       
       <div className="max-w-4xl mx-auto">
         <h1 className="text-5xl font-bold text-white text-center mb-8 drop-shadow-lg">
-          ⚡ Real-Time Lottery System
+          Real-Time Lottery System
         </h1>
 
         {/* Action Buttons */}
@@ -127,14 +127,14 @@ export default function RealtimePage() {
               disabled={loading}
               className="flex-1 bg-gradient-to-r from-green-500 to-emerald-600 text-white px-6 py-3 rounded-lg font-semibold hover:from-green-600 hover:to-emerald-700 transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-lg"
             >
-              🎭 Create Dummy Data
+              Create Dummy Data
             </button>
             <button
               onClick={handleRunLottery}
               disabled={loading || students.length === 0}
               className="flex-1 bg-gradient-to-r from-cyan-500 to-blue-600 text-white px-6 py-3 rounded-lg font-semibold hover:from-cyan-600 hover:to-blue-700 transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-lg text-lg"
             >
-              ⚡ RUN REAL-TIME LOTTERY!
+              RUN REAL-TIME LOTTERY!
             </button>
             <button
               onClick={async () => {
@@ -151,14 +151,14 @@ export default function RealtimePage() {
               disabled={loading || students.length === 0}
               className="flex-1 bg-gradient-to-r from-red-500 to-red-700 text-white px-6 py-3 rounded-lg font-semibold hover:from-red-600 hover:to-red-800 transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-lg"
             >
-              🗑️ Clear All Data
+              Clear All Data
             </button>
           </div>
         </div>
 
         {/* Create Student Form */}
         <div className="bg-white/10 backdrop-blur-md rounded-lg p-6 mb-6">
-          <h2 className="text-2xl font-bold text-white mb-4">➕ Add New Student</h2>
+          <h2 className="text-2xl font-bold text-white mb-4">Add New Student</h2>
           <form onSubmit={handleCreateStudent} className="space-y-4">
             <input
               type="text"
@@ -231,7 +231,7 @@ export default function RealtimePage() {
         {/* Students List */}
         <div className="bg-white/10 backdrop-blur-md rounded-lg p-6">
           <h2 className="text-2xl font-bold text-white mb-4">
-            👥 Students ({students.length})
+            Students ({students.length})
           </h2>
           
           {loading ? (

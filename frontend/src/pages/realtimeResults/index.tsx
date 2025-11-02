@@ -71,51 +71,9 @@ export default function RealtimeResults() {
   };
 
   const categorizeAllStudents = () => {
-    // Sort ALL students globally by priority (single category per person):
-    // 1. Single room students (ALWAYS FIRST)
-    // 2. Corrupt/Premium students
-    // 3. Top GPA students
-    // 4. Disabled students
-    // 5. Random/Rest
+    // Sort by room number
     return [...assignments].sort((a, b) => {
-      // 1. Single room students ALWAYS first
-      const aSingle = a.room_type === 'single';
-      const bSingle = b.room_type === 'single';
-      if (aSingle && !bSingle) return -1;
-      if (!aSingle && bSingle) return 1;
-      
-      // If both are single room, sort by room number
-      if (aSingle && bSingle) {
-        return a.room_number - b.room_number;
-      }
-      
-      // For non-single rooms, categorize by single category:
-      // 2. Corrupt students
-      if (a.corruption && !b.corruption) return -1;
-      if (!a.corruption && b.corruption) return 1;
-      if (a.corruption && b.corruption) {
-        return a.room_number - b.room_number;
-      }
-      
-      // 3. Top GPA students (non-corrupt, non-disabled)
-      const aTopGPA = !a.corruption && !a.disabled && a.gpa >= 3.5;
-      const bTopGPA = !b.corruption && !b.disabled && b.gpa >= 3.5;
-      if (aTopGPA && !bTopGPA) return -1;
-      if (!aTopGPA && bTopGPA) return 1;
-      if (aTopGPA && bTopGPA) {
-        return b.gpa - a.gpa; // Higher GPA first
-      }
-      
-      // 4. Disabled students (non-corrupt, non-top-gpa)
-      if (a.disabled && !b.disabled) return -1;
-      if (!a.disabled && b.disabled) return 1;
-      if (a.disabled && b.disabled) {
-        return a.room_number - b.room_number;
-      }
-      
-      // 5. Random/Rest - sort by room number then name
-      if (a.room_number !== b.room_number) return a.room_number - b.room_number;
-      return (a.name || '').localeCompare(b.name || '');
+      return a.room_number - b.room_number;
     });
   };
 
@@ -186,10 +144,10 @@ export default function RealtimeResults() {
           </div>
         </div>
 
-        {/* All Assignments - Sorted by Priority */}
+        {/* All Assignments - Sorted by Room Number */}
         <div className="bg-white/10 backdrop-blur-md rounded-lg p-6">
           <h2 className="text-3xl font-bold text-white mb-4">
-            � All Assignments (Sorted by Priority)
+            📋 All Assignments (Sorted by Room Number)
           </h2>
           <div className="space-y-2">
             {sortedAssignments && sortedAssignments.map((assignment, idx) => (
@@ -202,12 +160,32 @@ export default function RealtimeResults() {
                     <div className="flex items-center gap-2 mb-2">
                       <span className="text-white/60 font-mono text-sm min-w-[40px]">#{idx + 1}</span>
                       <p className="text-white font-semibold text-xl">{assignment.name}</p>
-                      {/* Only single room students have category badge */}
-                      {assignment.room_type === 'single' && (
-                        <span className="bg-cyan-500 text-white text-sm px-3 py-1 rounded-full font-bold">
-                          🚪 SINGLE ROOM
+                      {/* Room type badges based on student attributes and room type */}
+                      {assignment.room_type === 'single' && assignment.corruption ? (
+                        <span className="bg-orange-500 text-white text-sm px-3 py-1 rounded-full font-bold">
+                          🔶 CORRUPT PREMIUM ROOM
                         </span>
-                      )}
+                      ) : assignment.room_type === 'single' && !assignment.corruption && assignment.gpa >= 3.5 ? (
+                        <span className="bg-yellow-500 text-white text-sm px-3 py-1 rounded-full font-bold">
+                          ⭐ SCHOLARSHIP ROOM
+                        </span>
+                      ) : assignment.room_type === 'single' && assignment.disabled ? (
+                        <span className="bg-blue-500 text-white text-sm px-3 py-1 rounded-full font-bold">
+                          ♿ DISABLED ROOM
+                        </span>
+                      ) : assignment.room_type === 'single' ? (
+                        <span className="bg-green-500 text-white text-sm px-3 py-1 rounded-full font-bold">
+                          🎰 LOTTO WON SINGLE ROOM
+                        </span>
+                      ) : assignment.room_type === 'premium' && assignment.corruption ? (
+                        <span className="bg-orange-500 text-white text-sm px-3 py-1 rounded-full font-bold">
+                          🔶 CORRUPT PREMIUM
+                        </span>
+                      ) : assignment.room_type === 'premium' ? (
+                        <span className="bg-purple-500 text-white text-sm px-3 py-1 rounded-full font-bold">
+                          💎 RANDOM PREMIUM
+                        </span>
+                      ) : null}
                     </div>
                     <div className="flex gap-6 text-sm text-white/80 ml-[48px]">
                       <span className="font-medium">Room: <span className="text-white font-bold">#{assignment.room_number}</span></span>

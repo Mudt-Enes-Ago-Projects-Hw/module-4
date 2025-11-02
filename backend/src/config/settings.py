@@ -21,12 +21,10 @@ class Settings:
     
     @classmethod
     def get_database_uri(cls):
-        """Get the database URI"""
         return cls.SQLALCHEMY_DATABASE_URI
     
     @classmethod
     def ensure_data_dir(cls):
-        """Ensure the data directory exists"""
         data_dir = Path(cls.DB_PATH).parent
         data_dir.mkdir(parents=True, exist_ok=True)
 

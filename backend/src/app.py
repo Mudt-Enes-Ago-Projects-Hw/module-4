@@ -1,6 +1,7 @@
 import os
 import sys
 from flask import Flask
+from flask_cors import CORS
 
 # Add backend directory to sys.path so 'src' module can be imported
 BACKEND_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -9,6 +10,16 @@ if BACKEND_DIR not in sys.path:
 
 def create_app():
     app = Flask(__name__)
+    
+    # Enable CORS for all routes - allow all origins and all methods
+    CORS(app, resources={
+        r"/*": {
+            "origins": "*",
+            "methods": ["GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"],
+            "allow_headers": ["Content-Type", "Authorization"],
+            "supports_credentials": False
+        }
+    })
     
     # Load configuration from settings
     from src.config.settings import settings
